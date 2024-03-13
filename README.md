@@ -51,18 +51,22 @@ Run the following command to teardown the portfolio application:
 
 ### Code Layout
 
-| Path         | Description                                                    |
-| :----------- | :------------------------------------------------------------- |
-| cdk/         | AWS CDK source code                                            |
-| cicd/        | Amplify buildspec code                                         |
-| docs/assets/ | supporting assets for documentation.                           |
-| frontend/    | source code for NextJS frontend                                |
-| scripts/     | shell scripts to build, deploy, and interact with the project. |
+| Path      | Description                                                    |
+| :-------- | :------------------------------------------------------------- |
+| cdk/      | AWS CDK source code                                            |
+| cicd/     | Amplify buildspec code                                         |
+| docs/     | supporting assets and docs for documentation.                  |
+| frontend/ | source code for NextJS frontend                                |
+| scripts/  | shell scripts to build, deploy, and interact with the project. |
 
 ### Design Decisions
 
 _Langchain_
 
 Open source framework allowing AI developers to combine LLMs like GPT-4 with external sources of computation and data.
+
+_CloudScape_
+
+Open source frontend framework for components to render frontend.
 
 <!-- This portfolio is a static website which is best suited for sever-side rendering. Between ReactJS and NextJS, NextJS offers better server-side rendering. NextJS is a framework used to build UI and pages for the web app within the React Library. -->
