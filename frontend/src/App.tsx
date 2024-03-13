@@ -1,28 +1,20 @@
-import Button from "@cloudscape-design/components/button";
-import Container from "@cloudscape-design/components/container";
-import Header from "@cloudscape-design/components/header";
-import Input from "@cloudscape-design/components/input";
-import SpaceBetween from "@cloudscape-design/components/space-between";
-import { useState } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import NoMatch from "./pages/NoMatch";
+import Service from "./pages/Service";
 
 function App() {
-	const [value, setValue] = useState("");
-
 	return (
-		<SpaceBetween size="m">
-			<Header variant="h1">Hello World!</Header>
-
-			<Container>
-				<SpaceBetween size="s">
-					<span>Start editing to see some magic happen</span>
-					<Input
-						value={value}
-						onChange={(event) => setValue(event.detail.value)}
-					/>
-					<Button variant="primary">Click me</Button>
-				</SpaceBetween>
-			</Container>
-		</SpaceBetween>
+		<Router>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/service" element={<Service />} />
+				<Route path="*" element={<NoMatch />} />
+			</Routes>
+			<Footer />
+		</Router>
 	);
 }
 

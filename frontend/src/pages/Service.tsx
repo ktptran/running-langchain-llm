@@ -12,18 +12,17 @@ import {
 } from "@cloudscape-design/components";
 import { I18nProvider } from "@cloudscape-design/components/i18n";
 import messages from "@cloudscape-design/components/i18n/messages/all.en";
-import React from "react";
 
 const LOCALE = "en";
 
-export default function () {
+function Service() {
 	return (
 		<I18nProvider locale={LOCALE} messages={[messages]}>
 			<AppLayout
 				breadcrumbs={
 					<BreadcrumbGroup
 						items={[
-							{ text: "Home", href: "#" },
+							{ text: "Service", href: "#" },
 							{ text: "Service", href: "#" },
 						]}
 					/>
@@ -80,3 +79,5 @@ export default function () {
 		</I18nProvider>
 	);
 }
+
+export default Service;
