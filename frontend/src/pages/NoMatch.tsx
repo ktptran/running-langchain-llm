@@ -1,9 +1,13 @@
+import { Box, TextContent } from "@cloudscape-design/components";
+
 function NoMatch() {
 	return (
-		<div style={{ padding: 20 }}>
-			<h2>404: Page Not Found</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adip.</p>
-		</div>
+		<Box>
+			<TextContent>
+				<h1>404: Page Not Found</h1>
+				<p>Lorem ipsum dolor sit amet, consectetur adip.</p>
+			</TextContent>
+		</Box>
 	);
 }
 

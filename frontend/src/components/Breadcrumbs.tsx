@@ -4,8 +4,8 @@ function Breadcrumbs() {
 	return (
 		<BreadcrumbGroup
 			items={[
-				{ text: "Home", href: "#" },
-				{ text: "Service", href: "#" },
+				{ text: "Home", href: "/" },
+				{ text: "Chat Bot", href: "/chatbot" },
 			]}
 		/>
 	);

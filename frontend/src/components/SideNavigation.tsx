@@ -1,13 +1,15 @@
 import { SideNavigation } from "@cloudscape-design/components";
+import { hero } from "../data/data";
 
 function SideNav() {
+	const { header } = hero;
 	return (
 		<SideNavigation
 			header={{
-				href: "#",
-				text: "Service name",
+				href: "/",
+				text: header,
 			}}
-			items={[{ type: "link", text: `Paage #1`, href: `#` }]}
+			items={[{ type: "link", text: `Chat Bot`, href: "/chatbot" }]}
 		/>
 	);
 }

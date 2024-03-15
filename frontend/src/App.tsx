@@ -10,7 +10,7 @@ function App() {
 		<Router>
 			<Routes>
 				<Route path="/" element={<Home />} />
-				<Route path="/service" element={<Service />} />
+				<Route path="/chatbot" element={<Service />} />
 				<Route path="*" element={<NoMatch />} />
 			</Routes>
 			<Footer />
