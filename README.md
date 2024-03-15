@@ -45,9 +45,9 @@ Run the following command to teardown the portfolio application:
 
 ## Architecture Overview
 
-<!-- Upon pushing to the Github master branch, Amplify will retrieve the latest branch changes. These changes are processed through a CI/CD pipeline built into AWS Amplify. To retrieve credentials securely, the system uses the SSM Parameter Store. This is then routed through to Amazon Route 53 to provide DNS hosting capabilities for users to access.
+<!-- Upon pushing to the Github master branch, Amplify will retrieve the latest branch changes. These changes are processed through a CI/CD pipeline built into AWS Amplify. To retrieve credentials securely, the system uses the SSM Parameter Store. This is then routed through to Amazon Route 53 to provide DNS hosting capabilities for users to access. -->
 
-![Architecture Diagram](docs/assets/architecture-diagram.png) -->
+![Architecture Diagram](docs/assets/architecture-diagram.png)
 
 ### Code Layout
 
