@@ -17,6 +17,7 @@ import {
 import { I18nProvider } from "@cloudscape-design/components/i18n";
 import messages from "@cloudscape-design/components/i18n/messages/all.en";
 import { useState } from "react";
+import { putText } from "../api/apiService";
 import Bot from "../assets/bot.jpeg";
 import User from "../assets/user.jpeg";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -70,7 +71,10 @@ function SingleChat({ message, source }: { message: any; source: any }) {
 function ConversationInput({ setChatHistory }: { setChatHistory: any }) {
 	const [inputText, setInputText] = useState("");
 
-	const onSubmit = () => {
+	const onSubmit = async () => {
+		const response = await putText(inputText);
+		console.log(response);
+		// TODO: Process to show on frontend
 		setChatHistory((oldHistory: any) => [
 			...oldHistory,
 			{ message: inputText, source: "user" },

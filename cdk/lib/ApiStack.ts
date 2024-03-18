@@ -63,7 +63,7 @@ export class ApiStack extends cdk.Stack {
 		 */
 		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
 			code: lambda.Code.fromAsset("../backend"),
-			handler: "example.lambda_handler",
+			handler: "putText.lambda_handler",
 			runtime: lambda.Runtime.PYTHON_3_12,
 			role: lambdaRole,
 			environment: {
