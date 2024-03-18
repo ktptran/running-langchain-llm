@@ -7,25 +7,13 @@ echo "Script directory: $SCRIPT_DIR"
 . $SCRIPT_DIR/env.sh
 
 # Check for CDK Toolkit
-echo "Checking for CDK Bootstrap in us-east-1 for AWS WAF..."
-cfn_us_east_1=$(aws cloudformation describe-stacks \
+echo "Checking for CDK Bootstrap in current $AWS_REGION..."
+cfn=$(aws cloudformation describe-stacks \
     --query "Stacks[?StackName=='CDKToolkit'].StackName" \
-    --region us-east-1 \
+    --region $AWS_REGION \
     --output text)
-
-if [[ -z "$cfn_us_east_1" ]]; then 
-    cdk bootstrap aws://$AWS_ACCOUNT_ID/us-east-1
-fi
-
-if [ "us-east-1" != "$AWS_REGION" ]; then
-    echo "Checking for CDK Bootstrap in current $AWS_REGION..."
-    cfn=$(aws cloudformation describe-stacks \
-        --query "Stacks[?StackName=='CDKToolkit'].StackName" \
-        --region $AWS_REGION \
-        --output text)
-    if [[ -z "$cfn" ]]; then
-        cdk bootstrap aws://$AWS_ACCOUNT_ID/$AWS_REGION
-    fi
+if [[ -z "$cfn" ]]; then
+    cdk bootstrap aws://$AWS_ACCOUNT_ID/$AWS_REGION
 fi
 
 # Deploy CDK
@@ -35,8 +23,8 @@ cdk synth
 cdk deploy --all --require-approval never
 
 # Retrieve frontend configurations for aws-exports
-AMPLIFY_EXPORT=$SCRIPT_DIR/../frontend/src/aws-exports.js
-cp $SCRIPT_DIR/../frontend/src/aws-exports.js.template $AMPLIFY_EXPORT
+AMPLIFY_EXPORT=$SCRIPT_DIR/../frontend/src/aws-exports.ts
+cp $SCRIPT_DIR/../frontend/src/aws-exports.ts.template $AMPLIFY_EXPORT
 
 # Get CloudFormation outputs
 HTTP_API_ENDPOINT=$(aws cloudformation describe-stacks \
@@ -46,6 +34,7 @@ HTTP_API_ENDPOINT=$(aws cloudformation describe-stacks \
     --output text)
 
 sed -i -e "s,%API_ENDPOINT%,$HTTP_API_ENDPOINT,g" $AMPLIFY_EXPORT
+sed -i -e "s,%REGION%,$AWS_REGION,g" $AMPLIFY_EXPORT
 
 # Deploy frontend to S3 bucket
 BUCKET_NAME=$(aws cloudformation describe-stacks \
@@ -63,5 +52,5 @@ CLOUDFRONT_URL=$(aws cloudformation describe-stacks \
     --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionDomainName`].OutputValue' \
     --output text)
 echo "Changing back to root project directory"
-cd $SCRIPT_DIR/../
 echo "Your application is ready at: $CLOUDFRONT_URL"
+cd $SCRIPT_DIR/../

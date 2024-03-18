@@ -16,8 +16,6 @@ export class ApiStack extends cdk.Stack {
 
 		const { projectName, environment, accountId, region } = props;
 
-		const bucketName = `${environment}-${projectName}-${accountId}-${region}-bucket`;
-
 		// API Gateway
 		const httpApi = new apigw.HttpApi(this, "HttpApi", {
 			createDefaultStage: true,
@@ -57,22 +55,16 @@ export class ApiStack extends cdk.Stack {
 		/**
 		 * Lambda functions
 		 */
-
-		// Get image of selected timeframe
 		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
 			code: lambda.Code.fromAsset("../backend"),
-			handler: "get_image.handler",
+			handler: "example.handler",
 			runtime: lambda.Runtime.PYTHON_3_12,
-			environment: {
-				BUCKET_NAME: bucketName,
-			},
 			role: lambdaRole,
 		});
 
 		/**
 		 * Lambda & API Gateway integrations
 		 */
-
 		const getLambaProxy =
 			new cdk.aws_apigatewayv2_integrations.HttpLambdaIntegration(
 				"getLambdaIntegration",
