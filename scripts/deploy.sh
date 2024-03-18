@@ -5,6 +5,7 @@ echo "Script directory: $SCRIPT_DIR"
 
 # Set environment variables
 . $SCRIPT_DIR/env.sh
+. $SCRIPT_DIR/secret_env.sh
 
 # Check for CDK Toolkit
 echo "Checking for CDK Bootstrap in current $AWS_REGION..."
@@ -15,6 +16,18 @@ cfn=$(aws cloudformation describe-stacks \
 if [[ -z "$cfn" ]]; then
     cdk bootstrap aws://$AWS_ACCOUNT_ID/$AWS_REGION
 fi
+
+# Create SSM Parameters
+aws ssm put-parameter \
+    --name "/$PROJECT_NAME/$ENV/OPEN_API_KEY" \
+    --value "$OPEN_API_KEY" \
+    --type String \
+    --tags "Key=Project,Value=$PROJECT_NAME"
+aws ssm put-parameter \
+    --name "/$PROJECT_NAME/$ENV/HUGGINGFACEHUB_API_TOKEN" \
+    --value "$HUGGINGFACEHUB_API_TOKEN" \
+    --type String \
+    --tags "Key=Project,Value=$PROJECT_NAME"
 
 # Deploy CDK
 echo "Launching CDK application..."

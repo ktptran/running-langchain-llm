@@ -31,6 +31,20 @@ aws configure
 
 ### Deployment
 
+1. Create an [Open AI API Key](https://openai.com/blog/openai-api)
+
+2. Generate a [Hugging Face API token](https://huggingface.co/docs/hub/en/security-tokens)
+
+3. Generate the `secret_env.sh` after replacing the placeholders below using the following commands:
+
+```bash
+OPEN_API_KEY="example"
+HUGGINGFACEHUB_API_TOKEN="example"
+./scripts/generate_secret_env.sh $OPEN_API_KEY $HUGGINGFACEHUB_API_TOKEN
+```
+
+4. Run the deployment script.
+
 ```bash
 ./scripts/deploy.sh
 ```

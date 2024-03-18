@@ -6,6 +6,10 @@ echo "Script directory: $SCRIPT_DIR"
 # Environment variables
 . $SCRIPT_DIR/env.sh
 
+# Deleting SSM Parameters
+aws ssm delete-parameter --name "/$PROJECT_NAME/$ENV/OPEN_API_KEY"
+aws ssm delete-parameter --name "/$PROJECT_NAME/$ENV/HUGGINGFACEHUB_API_TOKEN"
+
 # Destroy CDK
 echo "Tearing down CDK application..."
 cd $SCRIPT_DIR/../cdk

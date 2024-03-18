@@ -1,2 +1,7 @@
+# Virtual environment configuration for local testing
 tutorial/.venv
 .env
+
+# Secret environment variables
+scripts/secret_env.sh
+scripts/secret_env.sh-e
