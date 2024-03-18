@@ -52,14 +52,24 @@ export class ApiStack extends cdk.Stack {
 			],
 		});
 
+		lambdaRole.addManagedPolicy(
+			cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+				"AmazonSSMReadOnlyAccess"
+			)
+		);
+
 		/**
 		 * Lambda functions
 		 */
 		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
 			code: lambda.Code.fromAsset("../backend"),
-			handler: "example.handler",
+			handler: "example.lambda_handler",
 			runtime: lambda.Runtime.PYTHON_3_12,
 			role: lambdaRole,
+			environment: {
+				OPEN_API_KEY: `/${projectName}/${environment}/OPEN_API_KEY`,
+				HUGGINGFACE_KEY: `/${projectName}/${environment}/HUGGINGFACEHUB_API_TOKEN`,
+			},
 		});
 
 		/**

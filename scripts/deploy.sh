@@ -21,12 +21,12 @@ fi
 aws ssm put-parameter \
     --name "/$PROJECT_NAME/$ENV/OPEN_API_KEY" \
     --value "$OPEN_API_KEY" \
-    --type String \
+    --type SecureString \
     --tags "Key=Project,Value=$PROJECT_NAME"
 aws ssm put-parameter \
     --name "/$PROJECT_NAME/$ENV/HUGGINGFACEHUB_API_TOKEN" \
     --value "$HUGGINGFACEHUB_API_TOKEN" \
-    --type String \
+    --type SecureString \
     --tags "Key=Project,Value=$PROJECT_NAME"
 
 # Deploy CDK
