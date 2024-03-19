@@ -1,10 +1,10 @@
-import { put } from "aws-amplify/api";
+import { get } from "aws-amplify/api";
 
-async function putText(inputText: any) {
+async function getText(inputText: any) {
 	try {
-		const restOperation = put({
+		const restOperation = get({
 			apiName: "HttpApi",
-			path: "/example",
+			path: "/text",
 			options: {
 				headers: {
 					"Content-Type": "application/json",
@@ -18,9 +18,10 @@ async function putText(inputText: any) {
 		});
 		const response = await restOperation.response;
 		console.log("PUT call succeeded: ", response);
+		return response;
 	} catch (err) {
 		console.error("PUT call failed: ", err);
 	}
 }
 
-export { putText };
+export { getText };

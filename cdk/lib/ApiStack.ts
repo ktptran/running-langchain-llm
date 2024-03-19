@@ -63,7 +63,7 @@ export class ApiStack extends cdk.Stack {
 		 */
 		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
 			code: lambda.Code.fromAsset("../backend"),
-			handler: "putText.lambda_handler",
+			handler: "getText.lambda_handler",
 			runtime: lambda.Runtime.PYTHON_3_12,
 			role: lambdaRole,
 			environment: {
@@ -82,7 +82,7 @@ export class ApiStack extends cdk.Stack {
 			);
 
 		httpApi.addRoutes({
-			path: "/example",
+			path: "/text",
 			methods: [apigw.HttpMethod.GET],
 			integration: getLambaProxy,
 		});
