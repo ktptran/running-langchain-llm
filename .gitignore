@@ -1,6 +1,8 @@
 # Virtual environment configuration for local testing
-tutorial/.venv
-.env
+.venv
+
+# VS Code Settings
+.vscode
 
 # Secret environment variables
 scripts/secret_env.sh
