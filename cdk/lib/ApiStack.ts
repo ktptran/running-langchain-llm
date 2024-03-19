@@ -1,7 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2";
-import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as ecrdeploy from "cdk-ecr-deployment";
 import { Construct } from "constructs";
+import path = require("path");
 
 export interface ApiStackProps extends cdk.StackProps {
 	projectName: string;
@@ -16,7 +17,67 @@ export class ApiStack extends cdk.Stack {
 
 		const { projectName, environment, accountId, region } = props;
 
-		// API Gateway
+		const ecrRepoName = `${projectName}-${environment}-llm-lambda`;
+		const imageTag = "latest";
+
+		const repository = new cdk.aws_ecr.Repository(this, "Repository", {
+			repositoryName: ecrRepoName,
+			removalPolicy: cdk.RemovalPolicy.DESTROY,
+		});
+
+		const asset = new cdk.aws_ecr_assets.DockerImageAsset(this, "BuildImage", {
+			directory: path.join(__dirname, "../../backend/functions"),
+			platform: cdk.aws_ecr_assets.Platform.LINUX_ARM64,
+		});
+
+		const deployment = new ecrdeploy.ECRDeployment(this, "DeployDockerImage", {
+			src: new ecrdeploy.DockerImageName(asset.imageUri),
+			dest: new ecrdeploy.DockerImageName(
+				`${accountId}.dkr.ecr.${region}.amazonaws.com/${ecrRepoName}:${imageTag}`
+			),
+		});
+
+		/**
+		 * Roles
+		 */
+		const lambdaRole = new cdk.aws_iam.Role(this, "lambdaRole", {
+			assumedBy: new cdk.aws_iam.ServicePrincipal("lambda.amazonaws.com"),
+			managedPolicies: [
+				cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+					"service-role/AWSLambdaBasicExecutionRole"
+				),
+			],
+		});
+
+		lambdaRole.addManagedPolicy(
+			cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+				"AmazonSSMReadOnlyAccess"
+			)
+		);
+
+		/**
+		 * Lambda functions
+		 */
+		const lambdaHandler = new cdk.aws_lambda.DockerImageFunction(
+			this,
+			"lambdaHandler",
+			{
+				code: cdk.aws_lambda.DockerImageCode.fromEcr(repository),
+				architecture: cdk.aws_lambda.Architecture.ARM_64,
+				timeout: cdk.Duration.seconds(300),
+				memorySize: 3008,
+				role: lambdaRole,
+				environment: {
+					OPEN_API_KEY: `/${projectName}/${environment}/OPEN_API_KEY`,
+					HUGGINGFACE_KEY: `/${projectName}/${environment}/HUGGINGFACEHUB_API_TOKEN`,
+				},
+			}
+		);
+		lambdaHandler.node.addDependency(deployment);
+
+		/**
+		 * API Gateway
+		 */
 		const httpApi = new apigw.HttpApi(this, "HttpApi", {
 			createDefaultStage: true,
 			apiName: `${environment}-${projectName}-api`,
@@ -40,53 +101,6 @@ export class ApiStack extends cdk.Stack {
 			},
 		});
 
-		/**
-		 * Roles
-		 */
-		const lambdaRole = new cdk.aws_iam.Role(this, "lambdaRole", {
-			assumedBy: new cdk.aws_iam.ServicePrincipal("lambda.amazonaws.com"),
-			managedPolicies: [
-				cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
-					"service-role/AWSLambdaBasicExecutionRole"
-				),
-			],
-		});
-
-		lambdaRole.addManagedPolicy(
-			cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
-				"AmazonSSMReadOnlyAccess"
-			)
-		);
-
-		/**
-		 * Lambda layers
-		 */
-		const openAiLayer = new lambda.LayerVersion(this, "openAiLayer", {
-			removalPolicy: cdk.RemovalPolicy.DESTROY,
-			code: lambda.Code.fromAsset("../backend/layers/openai-lambda-pkg.zip"),
-			compatibleArchitectures: [cdk.aws_lambda.Architecture.ARM_64],
-			compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
-		});
-
-		/**
-		 * Lambda functions
-		 */
-		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
-			code: lambda.Code.fromAsset("../backend/functions"),
-			handler: "get_text.lambda_handler",
-			runtime: lambda.Runtime.PYTHON_3_9,
-			architecture: cdk.aws_lambda.Architecture.ARM_64,
-			role: lambdaRole,
-			environment: {
-				OPEN_API_KEY: `/${projectName}/${environment}/OPEN_API_KEY`,
-				HUGGINGFACE_KEY: `/${projectName}/${environment}/HUGGINGFACEHUB_API_TOKEN`,
-			},
-			layers: [openAiLayer],
-		});
-
-		/**
-		 * Lambda & API Gateway integrations
-		 */
 		const getLambaProxy =
 			new cdk.aws_apigatewayv2_integrations.HttpLambdaIntegration(
 				"getLambdaIntegration",

@@ -13,7 +13,9 @@ async function getText(inputText: any) {
 					"Access-Control-Allow-Headers": "Content-Type",
 					"Access-Control-Allow-Credentials": "true",
 				},
-				body: inputText,
+				body: JSON.stringify({
+					prompt: inputText,
+				}),
 			},
 		});
 		const response = await restOperation.response;

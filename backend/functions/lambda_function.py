@@ -14,7 +14,7 @@ def handler(event, context):
     print("Event is:", event)
     print("Context is:", context)
 
-        # Locally the body is not encoded, via lambda URL it is
+    # Locally the body is not encoded, via lambda URL it is
     try:
         if event.get('isBase64Encoded', False):
             body = base64.b64decode(event['body']).decode('utf-8')
