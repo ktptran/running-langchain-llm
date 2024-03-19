@@ -4,6 +4,7 @@ import logging
 import os
 
 from botocore.exceptions import ClientError
+from openai import OpenAI
 from utils.processing import api_response
 from utils.ssm import get_parameter
 

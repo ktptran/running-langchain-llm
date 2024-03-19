@@ -59,17 +59,29 @@ export class ApiStack extends cdk.Stack {
 		);
 
 		/**
+		 * Lambda layers
+		 */
+		const openAiLayer = new lambda.LayerVersion(this, "openAiLayer", {
+			removalPolicy: cdk.RemovalPolicy.DESTROY,
+			code: lambda.Code.fromAsset("../backend/layers/openai-lambda-pkg.zip"),
+			compatibleArchitectures: [cdk.aws_lambda.Architecture.ARM_64],
+			compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
+		});
+
+		/**
 		 * Lambda functions
 		 */
 		const lambdaHandler = new lambda.Function(this, "lambdaHandler", {
-			code: lambda.Code.fromAsset("../backend"),
+			code: lambda.Code.fromAsset("../backend/functions"),
 			handler: "getText.lambda_handler",
-			runtime: lambda.Runtime.PYTHON_3_12,
+			runtime: lambda.Runtime.PYTHON_3_9,
+			architecture: cdk.aws_lambda.Architecture.ARM_64,
 			role: lambdaRole,
 			environment: {
 				OPEN_API_KEY: `/${projectName}/${environment}/OPEN_API_KEY`,
 				HUGGINGFACE_KEY: `/${projectName}/${environment}/HUGGINGFACEHUB_API_TOKEN`,
 			},
+			layers: [openAiLayer],
 		});
 
 		/**
